@@ -1,101 +1,168 @@
-/*
-  WEBSITE ENGINE
-
-  This file controls how the course is displayed.
-  Normally, you should NOT edit this file when writing lessons.
-*/
+```javascript
+// ============================================================
+// Automotive Model-Based Design Course
+// Website engine
+//
+// IMPORTANT:
+// Normally you should not need to edit this file.
+// Course content belongs in content/module1.js.
+// ============================================================
 
 const nav = document.getElementById("course-nav");
 const view = document.getElementById("lesson-view");
 
 const module = window.courseModules[0];
 
+
+// ============================================================
+// Navigation helper
+// ============================================================
+
 function addButton(parent, label, id, handler) {
   const button = document.createElement("button");
-  button.className = "nav-button";
+
   button.textContent = label;
   button.dataset.id = id;
+
   button.addEventListener("click", handler);
+
   parent.appendChild(button);
-  return button;
 }
+
+
+// ============================================================
+// Render left navigation
+// ============================================================
 
 function renderNavigation() {
   nav.innerHTML = "";
 
+  // Module title
   const moduleTitle = document.createElement("div");
-  moduleTitle.className = "nav-group-title";
+  moduleTitle.className = "nav-module-title";
   moduleTitle.textContent = module.title;
+
   nav.appendChild(moduleTitle);
 
+
+  // Opening lectures
+  const openingHeading = document.createElement("div");
+  openingHeading.className = "nav-section-heading";
+  openingHeading.textContent = "Getting started";
+
+  nav.appendChild(openingHeading);
+
   module.openingLectures.forEach((lecture) => {
-    addButton(nav, lecture.title, lecture.id, () => {
-      renderLecture(lecture.id);
-    });
+    addButton(
+      nav,
+      lecture.title,
+      lecture.id,
+      () => renderLecture(lecture.id)
+    );
   });
+
+
+  // Lessons and module work
+  const lessonsHeading = document.createElement("div");
+  lessonsHeading.className = "nav-section-heading";
+  lessonsHeading.textContent = "Module 1";
+
+  nav.appendChild(lessonsHeading);
 
   module.lessons.forEach((lesson) => {
-    addButton(nav, lesson.title, lesson.id, () => {
-      renderLesson(lesson.id);
-    });
+    addButton(
+      nav,
+      lesson.title,
+      lesson.id,
+      () => renderLesson(lesson.id)
+    );
   });
 }
+
+
+// ============================================================
+// Highlight active navigation button
+// ============================================================
 
 function clearActiveButtons(id) {
-  document.querySelectorAll(".nav-button").forEach((button) => {
-    button.classList.toggle("active", button.dataset.id === id);
+  const buttons = nav.querySelectorAll("button");
+
+  buttons.forEach((button) => {
+    button.classList.remove("active");
+
+    if (button.dataset.id === id) {
+      button.classList.add("active");
+    }
   });
 }
 
+
+// ============================================================
+// Render opening lecture
+// ============================================================
+
 function renderLecture(id) {
-  const lecture = module.openingLectures.find(item => item.id === id);
-  if (!lecture) return;
+  const lecture = module.openingLectures.find(
+    (item) => item.id === id
+  );
+
+  if (!lecture) {
+    return;
+  }
 
   clearActiveButtons(id);
 
-  let html = `
-    <article class="content-card">
-      <button class="back-link" onclick="showModuleHome()">← Module overview</button>
-      <h2>${lecture.title}</h2>
-  `;
+  let html = "";
+
+  html += `<div class="content-card">`;
+
+  html += `<p class="content-label">Opening lecture</p>`;
+
+  html += `<h1>${lecture.title}</h1>`;
 
   if (lecture.intro) {
-    lecture.intro.forEach(text => {
-      html += `<p class="meta">${text}</p>`;
-    });
+    html += `<p class="lead">${lecture.intro}</p>`;
   }
 
   if (lecture.details) {
-    html += `<h3>Module details</h3>`;
-    lecture.details.forEach(([label, value]) => {
-      html += `<p><strong>${label}:</strong> ${value}</p>`;
-    });
+    html += `<p>${lecture.details}</p>`;
   }
 
+
+  // Sections
   if (lecture.sections) {
-    lecture.sections.forEach(section => {
-      html += `<section>`;
-      html += `<h3>${section.heading}</h3>`;
+    lecture.sections.forEach((section) => {
+
+      html += `<section class="lesson-section">`;
+
+      html += `<h2>${section.heading}</h2>`;
+
 
       if (section.paragraphs) {
-        section.paragraphs.forEach(paragraph => {
+        section.paragraphs.forEach((paragraph) => {
           html += `<p>${paragraph}</p>`;
         });
       }
 
-      if (section.outcomes) {
-        html += `<ol class="outcomes">`;
-        section.outcomes.forEach(outcome => {
-          html += `<li>${outcome}</li>`;
-        });
-        html += `</ol>`;
-      }
 
       if (section.bullets) {
         html += `<ul>`;
-        section.bullets.forEach(bullet => {
+
+        section.bullets.forEach((bullet) => {
           html += `<li>${bullet}</li>`;
         });
+
+        html += `</ul>`;
+      }
+
+
+      if (section.outcomes) {
+        html += `<ul>`;
+
+        section.outcomes.forEach((outcome) => {
+          html += `<li>${outcome}</li>`;
+        });
+
         html += `</ul>`;
       }
 
@@ -103,59 +170,239 @@ function renderLecture(id) {
     });
   }
 
+
   if (lecture.closing) {
-    html += `<p><strong>${lecture.closing}</strong></p>`;
+    html += `
+      <div class="closing-note">
+        <p>${lecture.closing}</p>
+      </div>
+    `;
   }
 
-  html += `</article>`;
+  html += `</div>`;
+
   view.innerHTML = html;
 }
 
+
+// ============================================================
+// Render lesson
+// ============================================================
+
 function renderLesson(id) {
-  const lesson = module.lessons.find(item => item.id === id);
-  if (!lesson) return;
+  const lesson = module.lessons.find(
+    (item) => item.id === id
+  );
+
+  if (!lesson) {
+    return;
+  }
 
   clearActiveButtons(id);
 
-  view.innerHTML = `
-    <article class="content-card">
-      <button class="back-link" onclick="showModuleHome()">← Module overview</button>
-      <h2>${lesson.title}</h2>
+  let html = "";
 
-      <div class="lesson-placeholder">
-        <p>${lesson.description}</p>
-        <p>We will build this lesson when its content is ready.</p>
+  html += `<div class="content-card">`;
+
+  html += `<p class="content-label">Module 1</p>`;
+
+  html += `<h1>${lesson.title}</h1>`;
+
+
+  // Duration
+  if (lesson.duration) {
+    html += `
+      <p class="lesson-meta">
+        <strong>Estimated time:</strong> ${lesson.duration}
+      </p>
+    `;
+  }
+
+
+  // Current status
+  if (lesson.status === "planned") {
+    html += `
+      <div class="status-note">
+        <strong>Content status:</strong> Planned
       </div>
-    </article>
+    `;
+  }
+
+
+  // Description
+  if (lesson.description) {
+    html += `<p class="lead">${lesson.description}</p>`;
+  }
+
+
+  // Topics
+  if (lesson.topics && lesson.topics.length > 0) {
+
+    html += `<section class="lesson-section">`;
+
+    html += `<h2>Topics</h2>`;
+
+    html += `<ul>`;
+
+    lesson.topics.forEach((topic) => {
+      html += `<li>${topic}</li>`;
+    });
+
+    html += `</ul>`;
+
+    html += `</section>`;
+  }
+
+
+  // Exercise
+  if (lesson.exercise) {
+
+    html += `<section class="lesson-section">`;
+
+    html += `<h2>Exercise</h2>`;
+
+    html += `<p>${lesson.exercise}</p>`;
+
+    html += `</section>`;
+  }
+
+
+  // Output
+  if (lesson.output) {
+
+    html += `<section class="lesson-section">`;
+
+    html += `<h2>Output</h2>`;
+
+    html += `<p>${lesson.output}</p>`;
+
+    html += `</section>`;
+  }
+
+
+  html += `
+    <div class="lesson-placeholder">
+      <p>
+        The full written lesson, screenshots, downloads,
+        exercise instructions and knowledge check will be
+        added here when this lesson is developed.
+      </p>
+    </div>
   `;
+
+  html += `</div>`;
+
+  view.innerHTML = html;
 }
+
+
+// ============================================================
+// Module home page
+// ============================================================
 
 function showModuleHome() {
-  document.querySelectorAll(".nav-button").forEach(button => {
-    button.classList.remove("active");
-  });
 
-  view.innerHTML = `
-    <article class="content-card">
-      <p class="eyebrow">Module 1</p>
-      <h2>${module.title}</h2>
+  clearActiveButtons("");
 
+  let html = "";
+
+  html += `<div class="content-card">`;
+
+  html += `
+    <p class="content-label">Course module</p>
+    <h1>${module.title}</h1>
+  `;
+
+
+  if (module.description) {
+    html += `<p class="lead">${module.description}</p>`;
+  }
+
+
+  if (module.estimatedTime) {
+    html += `
       <p>
-        This module begins with two short lectures, followed by the course
-        lessons. Choose an item from the left to begin.
+        <strong>Estimated time:</strong>
+        ${module.estimatedTime}
+      </p>
+    `;
+  }
+
+
+  // Opening lectures
+  html += `
+    <section class="lesson-section">
+      <h2>Getting started</h2>
+      <p>
+        Begin with the two short opening lectures before moving
+        into the eight main lessons.
       </p>
 
-      <h3>Opening lectures</h3>
       <ul>
-        <li>Lecture 1: Welcome to Module 1</li>
-        <li>Lecture 2: Getting ready</li>
-      </ul>
-
-      <h3>Lessons</h3>
-      <p>Lessons 1.1–1.7 will be developed one at a time.</p>
-    </article>
   `;
+
+  module.openingLectures.forEach((lecture) => {
+    html += `<li>${lecture.title}</li>`;
+  });
+
+  html += `
+      </ul>
+    </section>
+  `;
+
+
+  // Main lessons
+  html += `
+    <section class="lesson-section">
+      <h2>Module 1 lessons</h2>
+      <ul>
+  `;
+
+  module.lessons.forEach((lesson) => {
+    html += `<li>${lesson.title}</li>`;
+  });
+
+  html += `
+      </ul>
+    </section>
+  `;
+
+
+  // Lesson template
+  html += `
+    <section class="lesson-section">
+      <h2>Standard lesson format</h2>
+
+      <ol>
+        <li>Goal in one sentence</li>
+        <li>Concept with text and diagram</li>
+        <li>Numbered walkthrough with annotated screenshots</li>
+        <li>Downloads</li>
+        <li>Exercise</li>
+        <li>Check</li>
+      </ol>
+    </section>
+  `;
+
+
+  html += `
+    <div class="closing-note">
+      <p>
+        Start with Lecture 1: Welcome to Module 1.
+      </p>
+    </div>
+  `;
+
+  html += `</div>`;
+
+  view.innerHTML = html;
 }
+
+
+// ============================================================
+// Start website
+// ============================================================
 
 renderNavigation();
 showModuleHome();
+```
