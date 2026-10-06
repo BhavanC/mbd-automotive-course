@@ -1,4 +1,3 @@
-```javascript
 // ============================================================
 // Module 1: Simulink Fundamentals for Automotive
 // Course: MATLAB & Simulink for Automotive
@@ -445,4 +444,3 @@ window.courseModules = [
     ]
   }
 ];
-```
