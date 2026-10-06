@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --border: #dfe4ea;
+  --text: #17202a;
+  --muted: #66717d;
+  --accent: #2563eb;
+  --accent-light: #eaf1ff;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 22px 32px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 3px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 91px);
+}
+
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+}
+
+.sidebar-title {
+  padding: 0 12px 12px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.nav-group-title {
+  padding: 14px 12px 8px;
+  font-weight: 700;
+}
+
+.nav-button {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  padding: 10px 12px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.nav-button:hover {
+  background: var(--bg);
+}
+
+.nav-button.active {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.main {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+.content-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px;
+}
+
+.content-card h2 {
+  margin-top: 0;
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.content-card h3 {
+  margin-top: 32px;
+}
+
+.meta {
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.outcomes {
+  padding-left: 24px;
+}
+
+.lesson-placeholder {
+  padding: 20px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.back-link {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .main {
+    padding: 24px 16px 60px;
+  }
+
+  .content-card {
+    padding: 24px;
+  }
+}
