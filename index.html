@@ -1,357 +1,778 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Module 1: Simulink Fundamentals for Automotive</title>
+
+<style>
+:root{
+  --bg:#f7f8fa;
+  --card:#fff;
+  --text:#1d2430;
+  --muted:#5d6878;
+  --accent:#0b6bcb;
+  --line:#e1e5ec;
+  --ok:#1a8f4c;
+}
+
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f141b;
+    --card:#171e28;
+    --text:#e8ecf2;
+    --muted:#9aa6b6;
+    --accent:#5aa9ff;
+    --line:#2a3441;
+    --ok:#4cc27f;
+  }
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+header{
+  padding:28px 20px;
+  border-bottom:1px solid var(--line);
+  background:var(--card);
+}
+
+header h1{
+  margin:0 0 4px;
+  font-size:1.6rem;
+}
+
+header p{
+  margin:0;
+  color:var(--muted);
+}
+
+.bar{
+  height:6px;
+  background:var(--line);
+  border-radius:3px;
+  margin-top:14px;
+  max-width:420px;
+}
+
+.bar i{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--ok);
+  border-radius:3px;
+  transition:width .3s;
+}
+
+.wrap{
+  display:flex;
+  max-width:1100px;
+  margin:0 auto;
+  gap:24px;
+  padding:20px;
+}
+
+nav{
+  flex:0 0 260px;
+}
+
+nav button{
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:10px 12px;
+  margin-bottom:6px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  border-radius:8px;
+  cursor:pointer;
+  font:inherit;
+  font-size:.93rem;
+}
+
+nav button.on{
+  border-color:var(--accent);
+  color:var(--accent);
+  font-weight:600;
+}
+
+nav button.done::after{
+  content:" ✓";
+  color:var(--ok);
+}
+
+main{
+  flex:1;
+  min-width:0;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:24px 28px;
+}
+
+main h2{
+  margin-top:0;
+}
+
+main h3{
+  margin-top:1.6em;
+}
+
+code,pre{
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:6px;
+  font-size:.88rem;
+}
+
+code{
+  padding:1px 5px;
+}
+
+pre{
+  padding:12px;
+  overflow-x:auto;
+}
+
+.tag{
+  color:var(--muted);
+  font-size:.85rem;
+}
+
+.facts{
+  width:100%;
+  border-collapse:collapse;
+  margin:12px 0;
+}
+
+.facts td{
+  border:1px solid var(--line);
+  padding:8px 12px;
+}
+
+.facts td:first-child{
+  font-weight:600;
+  width:110px;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  margin-top:28px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:9px 16px;
+  border-radius:8px;
+  border:1px solid var(--accent);
+  background:var(--accent);
+  color:#fff;
+  cursor:pointer;
+  font:inherit;
+}
+
+.btn.alt{
+  background:none;
+  color:var(--accent);
+}
+
+.lecture-label{
+  display:inline-block;
+  color:var(--accent);
+  font-size:.82rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  margin-bottom:8px;
+}
+
+@media (max-width:760px){
+
+  .wrap{
+    flex-direction:column;
+    padding:12px;
+  }
+
+  nav{
+    flex:none;
+  }
+
+  main{
+    padding:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <h1>Module 1: Simulink Fundamentals for Automotive</h1>
+
+  <p>
+    Model-based design for automotive engineering: build, control and debug
+    a vehicle model.
+  </p>
+
+  <div class="bar">
+    <i id="pb"></i>
+  </div>
+
+</header>
+
+
+<div class="wrap">
+
+  <!-- Navigation -->
+  <nav id="nav"></nav>
+
+  <!-- Lecture content -->
+  <main id="main"></main>
+
+</div>
+
+
 <script>
 
-/* =========================================================
-   MODULE 1
-   Exactly two lectures, as specified in the PDF:
-   
-   1. Lecture 1: Welcome to Module 1
-   2. Lecture 2: Getting ready
-   ========================================================= */
+/*
+===========================================================
+MODULE 1
+===========================================================
+
+The PDF specifies ONLY TWO lectures:
+
+1. Lecture 1: Welcome to Module 1
+2. Lecture 2: Getting ready
+
+The seven items under "What you'll be able to do"
+are learning outcomes, NOT separate lectures.
+
+===========================================================
+*/
+
 
 const course = [
 
-{
-  title:"Lecture 1: Welcome to Module 1",
+  /* ======================================================
+     LECTURE 1
+     ====================================================== */
 
-  html:`
+  {
+    title: "Lecture 1: Welcome to Module 1",
 
-  <p>
-    Learn to build your first working vehicle model in Simulink,
-    close a control loop around it, and find the faults that break
-    real models.
-  </p>
+    html: `
 
-  <table class="facts">
+      <div class="lecture-label">
+        Module 1 · Lecture 1
+      </div>
 
-    <tr>
-      <td>Time</td>
-      <td>About 8 hours, over one week</td>
-    </tr>
+      <p>
+        Learn to build your first working vehicle model in Simulink,
+        close a control loop around it, and find the faults that break
+        real models.
+      </p>
 
-    <tr>
-      <td>Level</td>
-      <td>Beginner. No Simulink experience needed</td>
-    </tr>
 
-    <tr>
-      <td>Format</td>
-      <td>Written lessons, annotated screenshots and downloadable models</td>
-    </tr>
+      <table class="facts">
 
-    <tr>
-      <td>Software</td>
-      <td>MATLAB and Simulink. No extra toolboxes</td>
-    </tr>
+        <tr>
+          <td>Time</td>
+          <td>About 8 hours, over one week</td>
+        </tr>
 
-  </table>
+        <tr>
+          <td>Level</td>
+          <td>Beginner. No Simulink experience needed</td>
+        </tr>
 
-  <h3>Why this module matters</h3>
+        <tr>
+          <td>Format</td>
+          <td>
+            Written lessons, annotated screenshots and downloadable models
+          </td>
+        </tr>
 
-  <p>
-    Carmakers and EV companies design their control software in Simulink
-    long before any code reaches a vehicle. They build a model, test it
-    on a computer, and only then move to hardware. This approach is
-    called model-based design, and it is one of the most asked-for
-    skills in automotive engineering jobs.
-  </p>
+        <tr>
+          <td>Software</td>
+          <td>
+            MATLAB and Simulink. No extra toolboxes
+          </td>
+        </tr>
 
-  <p>
-    This module gives you the foundation. You won't just learn where
-    the blocks are. You'll build a model of a vehicle, put a controller
-    on it, and learn how to tell when a model is wrong.
-  </p>
+      </table>
 
-  <h3>What you'll be able to do</h3>
 
-  <p>By the end of this module, you can:</p>
+      <h3>Why this module matters</h3>
 
-  <ul>
-    <li>
-      Build, run and read a Simulink model using the core blocks
-    </li>
+      <p>
+        Carmakers and EV companies design their control software in Simulink
+        long before any code reaches a vehicle. They build a model, test it
+        on a computer, and only then move to hardware. This approach is
+        called model-based design, and it is one of the most asked-for
+        skills in automotive engineering jobs.
+      </p>
 
-    <li>
-      Choose sensible solver and step-size settings, and explain
-      what happens when they are wrong
-    </li>
+      <p>
+        This module gives you the foundation. You won't just learn where
+        the blocks are. You'll build a model of a vehicle, put a controller
+        on it, and learn how to tell when a model is wrong.
+      </p>
 
-    <li>
-      Turn a vehicle equation into a working Simulink model
-    </li>
 
-    <li>
-      Close a feedback loop and tune a PID controller against clear targets
-    </li>
+      <h3>What you'll be able to do</h3>
 
-    <li>
-      Organise a model into subsystems and drive it from a MATLAB script
-    </li>
+      <p>
+        By the end of this module, you can:
+      </p>
 
-    <li>
-      Find and fix common model faults, such as algebraic loops and
-      unit mistakes
-    </li>
+      <ul>
 
-    <li>
-      Explain where model-based design fits in a vehicle development process
-    </li>
-  </ul>
+        <li>
+          Build, run and read a Simulink model using the core blocks
+        </li>
 
-  <p>
-    That's what the module covers. In the next lecture, you'll set up
-    everything you need to start.
-  </p>
+        <li>
+          Choose sensible solver and step-size settings, and explain
+          what happens when they are wrong
+        </li>
 
-  `
-},
+        <li>
+          Turn a vehicle equation into a working Simulink model
+        </li>
 
-{
-  title:"Lecture 2: Getting ready",
+        <li>
+          Close a feedback loop and tune a PID controller against clear
+          targets
+        </li>
 
-  html:`
+        <li>
+          Organise a model into subsystems and drive it from a MATLAB script
+        </li>
 
-  <p>
-    You now know what this module teaches and why it matters. This lecture
-    covers what you need before the first lesson.
-  </p>
+        <li>
+          Find and fix common model faults, such as algebraic loops and
+          unit mistakes
+        </li>
 
-  <h3>Before you start</h3>
+        <li>
+          Explain where model-based design fits in a vehicle development
+          process
+        </li>
 
-  <h3>You should already know</h3>
+      </ul>
 
-  <ul>
 
-    <li>
-      Basic MATLAB: variables, vectors, plotting, writing a short script.
-      If you need a refresher, use the free one-page Module 0 guide.
-    </li>
+      <p>
+        That's what the module covers. In the next lecture, you'll set up
+        everything you need to start.
+      </p>
 
-    <li>
-      First-year mechanics and calculus: Newton's second law and simple
-      differential equations.
-    </li>
+    `
+  },
 
-  </ul>
 
-  <h3>You don't need</h3>
+  /* ======================================================
+     LECTURE 2
+     ====================================================== */
 
-  <ul>
+  {
+    title: "Lecture 2: Getting ready",
 
-    <li>Any earlier Simulink experience</li>
+    html: `
 
-    <li>
-      Control theory. The ideas are introduced when you need them.
-    </li>
+      <div class="lecture-label">
+        Module 1 · Lecture 2
+      </div>
 
-    <li>
-      Extra toolboxes. Core MATLAB and Simulink are enough.
-    </li>
+      <p>
+        You now know what this module teaches and why it matters. This
+        lecture covers what you need before the first lesson.
+      </p>
 
-  </ul>
 
-  <h3>Getting the software</h3>
+      <h3>Before you start</h3>
 
-  <p>Pick whichever option works for you:</p>
 
-  <ul>
+      <h3>You should already know</h3>
 
-    <li>
-      <b>Your college licence:</b>
-      many colleges hold a campus-wide MATLAB licence. Check with your
-      department or computer centre; a short guide in the module shows
-      how to activate it.
-    </li>
+      <ul>
 
-    <li>
-      <b>MATLAB Online:</b>
-      runs in your browser, so it works on a low-spec laptop. Free usage
-      hours are limited, so check MathWorks' current terms.
-    </li>
+        <li>
+          Basic MATLAB: variables, vectors, plotting, writing a short
+          script. If you need a refresher, use the free one-page Module 0
+          guide.
+        </li>
 
-  </ul>
+        <li>
+          First-year mechanics and calculus: Newton's second law and simple
+          differential equations.
+        </li>
 
-  <p class="tag">
-    Version note: all models are saved in an older release format so they
-    open on most versions.
-  </p>
+      </ul>
 
-  <h3>What you'll download</h3>
 
-  <ul>
+      <h3>You don't need</h3>
 
-    <li>
-      Starter and finished Simulink models (<code>.slx</code>) for each lesson
-    </li>
+      <ul>
 
-    <li>
-      MATLAB scripts (<code>.m</code>) with the parameters used in the models
-    </li>
+        <li>
+          Any earlier Simulink experience
+        </li>
 
-    <li>
-      A one-page cheat sheet of Simulink shortcuts and common blocks (PDF)
-    </li>
+        <li>
+          Control theory. The ideas are introduced when you need them.
+        </li>
 
-  </ul>
+        <li>
+          Extra toolboxes. Core MATLAB and Simulink are enough.
+        </li>
 
-  <h3>How to get the most from this module</h3>
+      </ul>
 
-  <ul>
 
-    <li>
-      There are no videos. Read at your own pace and keep Simulink open
-      beside the lesson.
-    </li>
+      <h3>Getting the software</h3>
 
-    <li>
-      Build every model yourself before opening the finished version.
-    </li>
+      <p>
+        Pick whichever option works for you:
+      </p>
 
-    <li>
-      Note down the mistakes you make. Each one you record is one you'll
-      spot faster next time.
-    </li>
+      <ul>
 
-  </ul>
+        <li>
+          <b>Your college licence:</b>
+          many colleges hold a campus-wide MATLAB licence. Check with your
+          department or computer centre; a short guide in the module shows
+          how to activate it.
+        </li>
 
-  <p>
-    <b>You're ready. Open Lesson 1.1 to begin.</b>
-  </p>
+        <li>
+          <b>MATLAB Online:</b>
+          runs in your browser, so it works on a low-spec laptop. Free
+          usage hours are limited, so check MathWorks' current terms.
+        </li>
 
-  `
-}
+      </ul>
+
+
+      <p class="tag">
+        Version note: all models are saved in an older release format so
+        they open on most versions.
+      </p>
+
+
+      <h3>What you'll download</h3>
+
+      <ul>
+
+        <li>
+          Starter and finished Simulink models
+          (<code>.slx</code>) for each lesson
+        </li>
+
+        <li>
+          MATLAB scripts
+          (<code>.m</code>) with the parameters used in the models
+        </li>
+
+        <li>
+          A one-page cheat sheet of Simulink shortcuts and common blocks
+          (PDF)
+        </li>
+
+      </ul>
+
+
+      <h3>How to get the most from this module</h3>
+
+      <ul>
+
+        <li>
+          There are no videos. Read at your own pace and keep Simulink open
+          beside the lesson.
+        </li>
+
+        <li>
+          Build every model yourself before opening the finished version.
+        </li>
+
+        <li>
+          Note down the mistakes you make. Each one you record is one you'll
+          spot faster next time.
+        </li>
+
+      </ul>
+
+
+      <p>
+        <b>You're ready. Open Lesson 1.1 to begin.</b>
+      </p>
+
+    `
+  }
 
 ];
 
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+/*
+===========================================================
+PROGRESS / NAVIGATION
+===========================================================
+*/
 
-const nav = document.getElementById('nav');
-const main = document.getElementById('main');
-const pb = document.getElementById('pb');
+const nav = document.getElementById("nav");
+const main = document.getElementById("main");
+const pb = document.getElementById("pb");
 
 let done = [];
 let cur = 0;
 
-try{
-  done = JSON.parse(
-    localStorage.getItem('sim-m1-done') || '[]'
-  );
-}catch(e){
+
+/*
+Load completed lectures from browser storage.
+*/
+try {
+
+  const saved =
+    localStorage.getItem("sim-m1-done");
+
+  if(saved){
+    done = JSON.parse(saved);
+  }
+
+} catch(e) {
+
   done = [];
+
 }
 
+
+/*
+Save progress.
+*/
 function save(){
 
-  try{
+  try {
+
     localStorage.setItem(
-      'sim-m1-done',
+      "sim-m1-done",
       JSON.stringify(done)
     );
-  }catch(e){}
+
+  } catch(e) {
+
+    /* Ignore storage errors */
+
+  }
 
 }
+
+
+/*
+===========================================================
+BUILD NAVIGATION
+===========================================================
+*/
 
 function renderNav(){
 
-  nav.innerHTML = '';
+  nav.innerHTML = "";
 
-  course.forEach((m,i)=>{
+  course.forEach((lesson, index) => {
 
-    const b = document.createElement('button');
+    const button =
+      document.createElement("button");
 
-    b.textContent = m.title;
+    button.textContent =
+      lesson.title;
 
-    b.className =
-      (i === cur ? 'on ' : '') +
-      (done.includes(i) ? 'done' : '');
+    if(index === cur){
+      button.classList.add("on");
+    }
 
-    b.onclick = ()=>{
-      cur = i;
+    if(done.includes(index)){
+      button.classList.add("done");
+    }
+
+    button.onclick = function(){
+
+      cur = index;
+
       show();
+
     };
 
-    nav.appendChild(b);
+    nav.appendChild(button);
 
   });
 
+
+  /*
+  Progress is now based on exactly two lectures.
+  */
   pb.style.width =
-    (done.length / course.length * 100) + '%';
+    ((done.length / course.length) * 100) + "%";
+
 }
+
+
+/*
+===========================================================
+DISPLAY CURRENT LECTURE
+===========================================================
+*/
 
 function show(){
 
-  const m = course[cur];
+  const lesson = course[cur];
+
 
   main.innerHTML = `
 
-    <h2>${m.title}</h2>
+    <h2>${lesson.title}</h2>
 
-    ${m.html}
+    ${lesson.html}
 
     <div class="row">
 
       ${
         cur > 0
-        ? '<button class="btn alt" id="prev">← Previous</button>'
-        : ''
+        ?
+        `<button
+          class="btn alt"
+          id="prev">
+          ← Previous
+        </button>`
+        :
+        ""
       }
 
-      <button class="btn" id="mark">
+
+      <button
+        class="btn"
+        id="mark">
+
         ${
           done.includes(cur)
-          ? 'Completed ✓'
-          : 'Mark complete'
+          ? "Completed ✓"
+          : "Mark complete"
         }
+
       </button>
+
 
       ${
         cur < course.length - 1
-        ? '<button class="btn alt" id="next">Next →</button>'
-        : ''
+        ?
+        `<button
+          class="btn alt"
+          id="next">
+          Next →
+        </button>`
+        :
+        ""
       }
 
     </div>
 
   `;
 
-  document.getElementById('mark').onclick = ()=>{
+
+  /*
+  Mark complete
+  */
+  const mark =
+    document.getElementById("mark");
+
+  mark.onclick = function(){
 
     if(!done.includes(cur)){
+
       done.push(cur);
+
     }
 
     save();
+
     show();
 
   };
 
-  const p = document.getElementById('prev');
-  const n = document.getElementById('next');
 
-  if(p){
-    p.onclick = ()=>{
+  /*
+  Previous
+  */
+  const prev =
+    document.getElementById("prev");
+
+  if(prev){
+
+    prev.onclick = function(){
+
       cur--;
+
       show();
+
     };
+
   }
 
-  if(n){
-    n.onclick = ()=>{
+
+  /*
+  Next
+  */
+  const next =
+    document.getElementById("next");
+
+  if(next){
+
+    next.onclick = function(){
+
       cur++;
+
       show();
+
     };
+
   }
+
 
   renderNav();
 
+
+  /*
+  Scroll back to top when changing lecture.
+  */
   window.scrollTo({
-    top:0
+    top:0,
+    behavior:"smooth"
   });
 
 }
 
+
+/*
+===========================================================
+START APPLICATION
+===========================================================
+*/
+
 show();
 
 </script>
+
+</body>
+</html>
+```
