@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model-Based Design for Automotive Systems</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--text:#1d2430;--muted:#5d6878;--accent:#0b6bcb;--line:#e1e5ec;--ok:#1a8f4c}
+@media (prefers-color-scheme:dark){:root{--bg:#0f141b;--card:#171e28;--text:#e8ecf2;--muted:#9aa6b6;--accent:#5aa9ff;--line:#2a3441;--ok:#4cc27f}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+header{padding:28px 20px;border-bottom:1px solid var(--line);background:var(--card)}
+header h1{margin:0 0 4px;font-size:1.6rem}
+header p{margin:0;color:var(--muted)}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:14px;max-width:420px}
+.bar i{display:block;height:100%;width:0;background:var(--ok);border-radius:3px;transition:width .3s}
+.wrap{display:flex;max-width:1100px;margin:0 auto;gap:24px;padding:20px}
+nav{flex:0 0 260px}
+nav button{display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;cursor:pointer;font:inherit;font-size:.93rem}
+nav button.on{border-color:var(--accent);color:var(--accent);font-weight:600}
+nav button.done::after{content:" ✓";color:var(--ok)}
+main{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px 28px}
+main h2{margin-top:0}
+main h3{margin-top:1.6em}
+code,pre{background:var(--bg);border:1px solid var(--line);border-radius:6px;font-size:.88rem}
+code{padding:1px 5px}
+pre{padding:12px;overflow-x:auto}
+.tag{color:var(--muted);font-size:.85rem}
+.video{aspect-ratio:16/9;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:10px}
+.video iframe{width:100%;height:100%;border:0}
+.quiz{border-top:1px solid var(--line);margin-top:28px;padding-top:8px}
+.quiz label{display:block;padding:6px 0;cursor:pointer}
+.row{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.btn{padding:9px 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font:inherit}
+.btn.alt{background:none;color:var(--accent)}
+#fb{margin-top:8px;font-weight:600}
+@media (max-width:760px){.wrap{flex-direction:column;padding:12px}nav{flex:none}main{padding:18px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Model-Based Design for Automotive Systems</h1>
+  <p>A graduate-level course: from requirements to production code.</p>
+  <div class="bar"><i id="pb"></i></div>
+</header>
+<div class="wrap">
+  <nav id="nav"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+/* ===== EDIT YOUR COURSE HERE =====
+   Each module: title, html (lesson content), video (YouTube ID or ""), 
+   quiz {q, options[], answer (index)} */
+const course = [
+{
+ title:"1. Why Model-Based Design?",
+ video:"",
+ html:`<p class="tag">Duration: ~45 min</p>
+ <p>Traditional development writes code from text specifications. In Model-Based Design (MBD), an executable model becomes the specification, the test bench and the source of production code.</p>
+ <h3>The V-model in automotive</h3>
+ <p>Requirements → system design → software design → implementation on the left; unit, integration and system tests on the right. MBD adds simulation at every level, so errors are found early.</p>
+ <h3>Learning outcomes</h3>
+ <ul><li>Explain MBD benefits and limits</li><li>Map MBD activities to the V-model</li><li>Name common tools: MATLAB/Simulink, Stateflow, dSPACE, TargetLink</li></ul>`,
+ quiz:{q:"What is the main benefit of simulating at early V-model stages?",options:["Faster hardware","Earlier defect detection","No need for testing"],answer:1}
+},
+{
+ title:"2. Simulink & Stateflow Basics",
+ video:"",
+ html:`<p class="tag">Duration: ~90 min</p>
+ <p>Simulink models continuous and discrete dynamics with block diagrams. Stateflow models supervisory logic such as modes and fault handling.</p>
+ <h3>Key concepts</h3>
+ <ul><li>Solvers: fixed-step vs variable-step</li><li>Sample time and rate transitions</li><li>Charts, states, transitions, guards</li></ul>
+ <h3>Exercise</h3>
+ <p>Build a gear-selector chart with states <code>P, R, N, D</code> and a safety interlock that blocks <code>D</code> above a speed limit when reverse is requested.</p>`,
+ quiz:{q:"Which tool is best suited for mode/supervisory logic?",options:["Stateflow","Lookup table","Scope block"],answer:0}
+},
+{
+ title:"3. Plant Modelling: Vehicle & Powertrain",
+ video:"",
+ html:`<p class="tag">Duration: ~2 h</p>
+ <p>A controller needs a plant to test against. Start with a longitudinal vehicle model:</p>
+<pre>m·dv/dt = F_traction − F_aero − F_roll − F_grade
+F_aero = ½·ρ·Cd·A·v²
+F_roll = Crr·m·g·cos(θ)</pre>
+ <h3>Extend with</h3>
+ <ul><li>Electric motor and inverter efficiency maps</li><li>Battery equivalent circuit model (OCV + R-C pairs)</li><li>Driveline and brake models</li></ul>
+ <h3>Assignment</h3>
+ <p>Simulate a WLTP cycle and report energy consumption in Wh/km.</p>`,
+ quiz:{q:"Which force term grows with the square of speed?",options:["Rolling resistance","Aerodynamic drag","Grade force"],answer:1}
+},
+{
+ title:"4. Controller Design",
+ video:"",
+ html:`<p class="tag">Duration: ~2 h</p>
+ <p>Design controllers on the plant model, then discretise for the ECU.</p>
+ <ul><li>PID with anti-windup (speed, torque, current loops)</li><li>Cascaded control in EV drives</li><li>Battery management: SoC estimation, limits, cell balancing logic</li><li>Calibration with lookup tables and maps</li></ul>
+ <h3>Assignment</h3>
+ <p>Design a cruise controller with anti-windup and compare step response against a settling-time requirement.</p>`,
+ quiz:{q:"Why is anti-windup needed?",options:["To reduce noise","To stop integrator saturation during actuator limits","To speed up the solver"],answer:1}
+},
+{
+ title:"5. Verification: MIL, SIL, PIL, HIL",
+ video:"",
+ html:`<p class="tag">Duration: ~1.5 h</p>
+ <p>The same test cases are reused as the design moves toward hardware.</p>
+ <ul><li><b>MIL</b>: model runs against plant model</li><li><b>SIL</b>: generated C code on the host PC</li><li><b>PIL</b>: code on target processor, plant on PC</li><li><b>HIL</b>: real ECU, simulated vehicle in real time</li></ul>
+ <p>Back-to-back testing checks that MIL and SIL outputs match within tolerance.</p>`,
+ quiz:{q:"In HIL testing, what is real?",options:["The ECU","The vehicle","Nothing"],answer:0}
+},
+{
+ title:"6. Code Generation & AUTOSAR",
+ video:"",
+ html:`<p class="tag">Duration: ~2 h</p>
+ <p>Embedded Coder or TargetLink turns the model into C code. In AUTOSAR, the software is split into software components (SWCs) communicating via ports and run by the RTE.</p>
+ <ul><li>Data types, fixed-point vs floating-point</li><li>Runnables and scheduling</li><li>Code metrics: stack, RAM/ROM, execution time</li></ul>`,
+ quiz:{q:"Which AUTOSAR layer connects SWCs to each other?",options:["RTE","Bootloader","CAN driver only"],answer:0}
+},
+{
+ title:"7. Standards, Safety & Capstone",
+ video:"",
+ html:`<p class="tag">Duration: ~2 h + project</p>
+ <ul><li><b>ISO 26262</b>: functional safety, ASIL levels, tool qualification</li><li><b>MISRA C</b>: coding guidelines</li><li><b>MAAB / modelling guidelines</b>: readable, checkable models</li><li>Coverage metrics: MC/DC, decision, condition</li></ul>
+ <h3>Capstone</h3>
+ <p>Choose a function (e.g. regenerative braking blending, thermal management, BMS fault handling). Deliver: requirements, model, test cases with coverage report, generated code and a short report.</p>`,
+ quiz:{q:"Which standard governs automotive functional safety?",options:["ISO 26262","ISO 9001","IEEE 802.11"],answer:0}
+}
+];
+/* ===== END EDIT ===== */
+
+const nav=document.getElementById('nav'),main=document.getElementById('main'),pb=document.getElementById('pb');
+let done=[],cur=0;
+try{done=JSON.parse(localStorage.getItem('mbd-done')||'[]')}catch(e){}
+function save(){try{localStorage.setItem('mbd-done',JSON.stringify(done))}catch(e){}}
+function renderNav(){
+  nav.innerHTML='';
+  course.forEach((m,i)=>{
+    const b=document.createElement('button');
+    b.textContent=m.title;
+    b.className=(i===cur?'on ':'')+(done.includes(i)?'done':'');
+    b.onclick=()=>{cur=i;show()};
+    nav.appendChild(b);
+  });
+  pb.style.width=(done.length/course.length*100)+'%';
+}
+function show(){
+  const m=course[cur];
+  const vid=m.video?`<iframe src="https://www.youtube.com/embed/${m.video}" allowfullscreen></iframe>`:`Video placeholder: set <code>video</code> to a YouTube ID`;
+  const opts=m.quiz.options.map((o,i)=>`<label><input type="radio" name="q" value="${i}"> ${o}</label>`).join('');
+  main.innerHTML=`<h2>${m.title}</h2><div class="video">${vid}</div>${m.html}
+  <div class="quiz"><h3>Check your understanding</h3><p>${m.quiz.q}</p>${opts}
+  <button class="btn alt" id="chk">Check answer</button><div id="fb"></div></div>
+  <div class="row">
+    ${cur>0?'<button class="btn alt" id="prev">← Previous</button>':''}
+    <button class="btn" id="mark">${done.includes(cur)?'Completed ✓':'Mark complete'}</button>
+    ${cur<course.length-1?'<button class="btn alt" id="next">Next →</button>':''}
+  </div>`;
+  document.getElementById('chk').onclick=()=>{
+    const s=document.querySelector('input[name=q]:checked');
+    const fb=document.getElementById('fb');
+    if(!s){fb.textContent='Pick an option first.';return}
+    fb.textContent=+s.value===m.quiz.answer?'Correct ✓':'Not quite, try again.';
+  };
+  document.getElementById('mark').onclick=()=>{
+    if(!done.includes(cur))done.push(cur);save();show();
+  };
+  const p=document.getElementById('prev'),n=document.getElementById('next');
+  if(p)p.onclick=()=>{cur--;show()};
+  if(n)n.onclick=()=>{cur++;show()};
+  renderNav();
+  window.scrollTo({top:0});
+}
+show();
+</script>
+</body>
+</html>
