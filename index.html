@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Model-Based Design for Automotive Systems</title>
+<title>Module 1: Simulink Fundamentals for Automotive</title>
 <style>
 :root{--bg:#f7f8fa;--card:#fff;--text:#1d2430;--muted:#5d6878;--accent:#0b6bcb;--line:#e1e5ec;--ok:#1a8f4c}
 @media (prefers-color-scheme:dark){:root{--bg:#0f141b;--card:#171e28;--text:#e8ecf2;--muted:#9aa6b6;--accent:#5aa9ff;--line:#2a3441;--ok:#4cc27f}}
@@ -26,6 +26,7 @@ code,pre{background:var(--bg);border:1px solid var(--line);border-radius:6px;fon
 code{padding:1px 5px}
 pre{padding:12px;overflow-x:auto}
 .tag{color:var(--muted);font-size:.85rem}
+.facts{width:100%;border-collapse:collapse;margin:12px 0}.facts td{border:1px solid var(--line);padding:8px 12px}.facts td:first-child{font-weight:600;width:110px}
 .video{aspect-ratio:16/9;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:10px}
 .video iframe{width:100%;height:100%;border:0}
 .quiz{border-top:1px solid var(--line);margin-top:28px;padding-top:8px}
@@ -35,103 +36,79 @@ pre{padding:12px;overflow-x:auto}
 .btn.alt{background:none;color:var(--accent)}
 #fb{margin-top:8px;font-weight:600}
 @media (max-width:760px){.wrap{flex-direction:column;padding:12px}nav{flex:none}main{padding:18px}}
+  
 </style>
 </head>
 <body>
 <header>
-  <h1>Model-Based Design for Automotive Systems</h1>
-  <p>A graduate-level course: from requirements to production code.</p>
+  <h1>Module 1: Simulink Fundamentals for Automotive</h1>
+  <p>Model-based design for automotive engineering: build, control and debug a vehicle model.</p>
   <div class="bar"><i id="pb"></i></div>
 </header>
 <div class="wrap">
   <nav id="nav"></nav>
   <main id="main"></main>
 </div>
-
 <script>
+  
 /* ===== EDIT YOUR COURSE HERE =====
-   Each module: title, html (lesson content), video (YouTube ID or ""), 
-   quiz {q, options[], answer (index)} */
-const course = [
+   Each item: title, html (content), optional quiz {q, options[], answer index} */
+const lessons=[
+ ["1.1","Build, run and read a Simulink model using the core blocks"],
+ ["1.2","Choose sensible solver and step-size settings, and what happens when they are wrong"],
+ ["1.3","Turn a vehicle equation into a working Simulink model"],
+ ["1.4","Close a feedback loop and tune a PID controller against clear targets"],
+ ["1.5","Organise a model into subsystems and drive it from a MATLAB script"],
+ ["1.6","Find and fix common model faults: algebraic loops and unit mistakes"],
+ ["1.7","Where model-based design fits in a vehicle development process"]
+];
+const course=[
 {
- title:"1. Why Model-Based Design?",
- video:"",
- html:`<p class="tag">Duration: ~45 min</p>
- <p>Traditional development writes code from text specifications. In Model-Based Design (MBD), an executable model becomes the specification, the test bench and the source of production code.</p>
- <h3>The V-model in automotive</h3>
- <p>Requirements → system design → software design → implementation on the left; unit, integration and system tests on the right. MBD adds simulation at every level, so errors are found early.</p>
- <h3>Learning outcomes</h3>
- <ul><li>Explain MBD benefits and limits</li><li>Map MBD activities to the V-model</li><li>Name common tools: MATLAB/Simulink, Stateflow, dSPACE, TargetLink</li></ul>`,
- quiz:{q:"What is the main benefit of simulating at early V-model stages?",options:["Faster hardware","Earlier defect detection","No need for testing"],answer:1}
+ title:"Lecture 1: Welcome to Module 1",
+ html:`<p>Learn to build your first working vehicle model in Simulink, close a control loop around it, and find the faults that break real models.</p>
+ <table class="facts"><tr><td>Time</td><td>About 8 hours, over one week</td></tr>
+ <tr><td>Level</td><td>Beginner. No Simulink experience needed</td></tr>
+ <tr><td>Format</td><td>Written lessons, annotated screenshots and downloadable models</td></tr>
+ <tr><td>Software</td><td>MATLAB and Simulink. No extra toolboxes</td></tr></table>
+ <h3>Why this module matters</h3>
+ <p>Carmakers and EV companies design their control software in Simulink long before any code reaches a vehicle. They build a model, test it on a computer, and only then move to hardware. This approach is called model-based design, and it is one of the most asked-for skills in automotive engineering jobs.</p>
+ <p>This module gives you the foundation. You won't just learn where the blocks are. You'll build a model of a vehicle, put a controller on it, and learn how to tell when a model is wrong.</p>
+ <h3>What you'll be able to do</h3>
+ <ul>${lessons.map(l=>"<li>"+l[1]+"</li>").join("")}</ul>`
 },
 {
- title:"2. Simulink & Stateflow Basics",
- video:"",
- html:`<p class="tag">Duration: ~90 min</p>
- <p>Simulink models continuous and discrete dynamics with block diagrams. Stateflow models supervisory logic such as modes and fault handling.</p>
- <h3>Key concepts</h3>
- <ul><li>Solvers: fixed-step vs variable-step</li><li>Sample time and rate transitions</li><li>Charts, states, transitions, guards</li></ul>
- <h3>Exercise</h3>
- <p>Build a gear-selector chart with states <code>P, R, N, D</code> and a safety interlock that blocks <code>D</code> above a speed limit when reverse is requested.</p>`,
- quiz:{q:"Which tool is best suited for mode/supervisory logic?",options:["Stateflow","Lookup table","Scope block"],answer:0}
+ title:"Lecture 2: Getting ready",
+ html:`<h3>You should already know</h3>
+ <ul><li>Basic MATLAB: variables, vectors, plotting, writing a short script (refresher: the free one-page Module 0 guide)</li>
+ <li>First-year mechanics and calculus: Newton's second law and simple differential equations</li></ul>
+ <h3>You don't need</h3>
+ <ul><li>Any earlier Simulink experience</li><li>Control theory. The ideas are introduced when you need them</li><li>Extra toolboxes. Core MATLAB and Simulink are enough</li></ul>
+ <h3>Getting the software</h3>
+ <ul><li><b>Your college licence:</b> many colleges hold a campus-wide MATLAB licence. Check with your department or computer centre.</li>
+ <li><b>MATLAB Online:</b> runs in your browser, so it works on a low-spec laptop. Free usage hours are limited, so check MathWorks' current terms.</li></ul>
+ <p class="tag">Version note: all models are saved in an older release format so they open on most versions.</p>
+ <h3>What you'll download</h3>
+ <ul><li>Starter and finished Simulink models (<code>.slx</code>) for each lesson</li>
+ <li>MATLAB scripts (<code>.m</code>) with the parameters used in the models</li>
+ <li>A one-page cheat sheet of Simulink shortcuts and common blocks (PDF)</li></ul>
+ <h3>How to get the most from this module</h3>
+ <ul><li>There are no videos. Read at your own pace and keep Simulink open beside the lesson.</li>
+ <li>Build every model yourself before opening the finished version.</li>
+ <li>Note down the mistakes you make. Each one you record is one you'll spot faster next time.</li></ul>
+ <p><b>You're ready. Open Lesson 1.1 to begin.</b></p>`
 },
-{
- title:"3. Plant Modelling: Vehicle & Powertrain",
- video:"",
- html:`<p class="tag">Duration: ~2 h</p>
- <p>A controller needs a plant to test against. Start with a longitudinal vehicle model:</p>
-<pre>m·dv/dt = F_traction − F_aero − F_roll − F_grade
-F_aero = ½·ρ·Cd·A·v²
-F_roll = Crr·m·g·cos(θ)</pre>
- <h3>Extend with</h3>
- <ul><li>Electric motor and inverter efficiency maps</li><li>Battery equivalent circuit model (OCV + R-C pairs)</li><li>Driveline and brake models</li></ul>
- <h3>Assignment</h3>
- <p>Simulate a WLTP cycle and report energy consumption in Wh/km.</p>`,
- quiz:{q:"Which force term grows with the square of speed?",options:["Rolling resistance","Aerodynamic drag","Grade force"],answer:1}
-},
-{
- title:"4. Controller Design",
- video:"",
- html:`<p class="tag">Duration: ~2 h</p>
- <p>Design controllers on the plant model, then discretise for the ECU.</p>
- <ul><li>PID with anti-windup (speed, torque, current loops)</li><li>Cascaded control in EV drives</li><li>Battery management: SoC estimation, limits, cell balancing logic</li><li>Calibration with lookup tables and maps</li></ul>
- <h3>Assignment</h3>
- <p>Design a cruise controller with anti-windup and compare step response against a settling-time requirement.</p>`,
- quiz:{q:"Why is anti-windup needed?",options:["To reduce noise","To stop integrator saturation during actuator limits","To speed up the solver"],answer:1}
-},
-{
- title:"5. Verification: MIL, SIL, PIL, HIL",
- video:"",
- html:`<p class="tag">Duration: ~1.5 h</p>
- <p>The same test cases are reused as the design moves toward hardware.</p>
- <ul><li><b>MIL</b>: model runs against plant model</li><li><b>SIL</b>: generated C code on the host PC</li><li><b>PIL</b>: code on target processor, plant on PC</li><li><b>HIL</b>: real ECU, simulated vehicle in real time</li></ul>
- <p>Back-to-back testing checks that MIL and SIL outputs match within tolerance.</p>`,
- quiz:{q:"In HIL testing, what is real?",options:["The ECU","The vehicle","Nothing"],answer:0}
-},
-{
- title:"6. Code Generation & AUTOSAR",
- video:"",
- html:`<p class="tag">Duration: ~2 h</p>
- <p>Embedded Coder or TargetLink turns the model into C code. In AUTOSAR, the software is split into software components (SWCs) communicating via ports and run by the RTE.</p>
- <ul><li>Data types, fixed-point vs floating-point</li><li>Runnables and scheduling</li><li>Code metrics: stack, RAM/ROM, execution time</li></ul>`,
- quiz:{q:"Which AUTOSAR layer connects SWCs to each other?",options:["RTE","Bootloader","CAN driver only"],answer:0}
-},
-{
- title:"7. Standards, Safety & Capstone",
- video:"",
- html:`<p class="tag">Duration: ~2 h + project</p>
- <ul><li><b>ISO 26262</b>: functional safety, ASIL levels, tool qualification</li><li><b>MISRA C</b>: coding guidelines</li><li><b>MAAB / modelling guidelines</b>: readable, checkable models</li><li>Coverage metrics: MC/DC, decision, condition</li></ul>
- <h3>Capstone</h3>
- <p>Choose a function (e.g. regenerative braking blending, thermal management, BMS fault handling). Deliver: requirements, model, test cases with coverage report, generated code and a short report.</p>`,
- quiz:{q:"Which standard governs automotive functional safety?",options:["ISO 26262","ISO 9001","IEEE 802.11"],answer:0}
-}
+...lessons.map(l=>({
+ title:"Lesson "+l[0],
+ html:`<p class="tag">Coming soon</p><p><b>Goal:</b> ${l[1]}.</p>
+ <p>Replace this text with the lesson: explanation, annotated screenshots, and download links for the starter and finished <code>.slx</code> models.</p>`
+}))
 ];
 /* ===== END EDIT ===== */
 
 const nav=document.getElementById('nav'),main=document.getElementById('main'),pb=document.getElementById('pb');
 let done=[],cur=0;
-try{done=JSON.parse(localStorage.getItem('mbd-done')||'[]')}catch(e){}
-function save(){try{localStorage.setItem('mbd-done',JSON.stringify(done))}catch(e){}}
+try{done=JSON.parse(localStorage.getItem('sim-m1-done')||'[]')}catch(e){}
+function save(){try{localStorage.setItem('sim-m1-done',JSON.stringify(done))}catch(e){}}
 function renderNav(){
   nav.innerHTML='';
   course.forEach((m,i)=>{
@@ -145,25 +122,23 @@ function renderNav(){
 }
 function show(){
   const m=course[cur];
-  const vid=m.video?`<iframe src="https://www.youtube.com/embed/${m.video}" allowfullscreen></iframe>`:`Video placeholder: set <code>video</code> to a YouTube ID`;
-  const opts=m.quiz.options.map((o,i)=>`<label><input type="radio" name="q" value="${i}"> ${o}</label>`).join('');
-  main.innerHTML=`<h2>${m.title}</h2><div class="video">${vid}</div>${m.html}
-  <div class="quiz"><h3>Check your understanding</h3><p>${m.quiz.q}</p>${opts}
-  <button class="btn alt" id="chk">Check answer</button><div id="fb"></div></div>
+  let q='';
+  if(m.quiz){
+    const opts=m.quiz.options.map((o,i)=>`<label><input type="radio" name="q" value="${i}"> ${o}</label>`).join('');
+    q=`<div class="quiz"><h3>Check your understanding</h3><p>${m.quiz.q}</p>${opts}<button class="btn alt" id="chk">Check answer</button><div id="fb"></div></div>`;
+  }
+  main.innerHTML=`<h2>${m.title}</h2>${m.html}${q}
   <div class="row">
     ${cur>0?'<button class="btn alt" id="prev">← Previous</button>':''}
     <button class="btn" id="mark">${done.includes(cur)?'Completed ✓':'Mark complete'}</button>
     ${cur<course.length-1?'<button class="btn alt" id="next">Next →</button>':''}
   </div>`;
-  document.getElementById('chk').onclick=()=>{
-    const s=document.querySelector('input[name=q]:checked');
-    const fb=document.getElementById('fb');
-    if(!s){fb.textContent='Pick an option first.';return}
-    fb.textContent=+s.value===m.quiz.answer?'Correct ✓':'Not quite, try again.';
+  const c=document.getElementById('chk');
+  if(c)c.onclick=()=>{
+    const s=document.querySelector('input[name=q]:checked'),fb=document.getElementById('fb');
+    fb.textContent=!s?'Pick an option first.':(+s.value===m.quiz.answer?'Correct ✓':'Not quite, try again.');
   };
-  document.getElementById('mark').onclick=()=>{
-    if(!done.includes(cur))done.push(cur);save();show();
-  };
+  document.getElementById('mark').onclick=()=>{if(!done.includes(cur))done.push(cur);save();show()};
   const p=document.getElementById('prev'),n=document.getElementById('next');
   if(p)p.onclick=()=>{cur--;show()};
   if(n)n.onclick=()=>{cur++;show()};
