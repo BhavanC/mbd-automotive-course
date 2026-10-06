@@ -1,4 +1,3 @@
-```javascript
 // ============================================================
 // Automotive Model-Based Design Course
 // Website engine
@@ -405,4 +404,3 @@ function showModuleHome() {
 
 renderNavigation();
 showModuleHome();
-```
